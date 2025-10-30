@@ -414,7 +414,7 @@ def main():
         sys.exit(0)
     else:
         console.print(Panel.fit(
-            f"[bold red]⚠️  Some tests failed ({passed_count}/{total_count} passed)[/bold red]\n"
+            f"[bold red]⚠️ Some tests failed ({passed_count}/{total_count} passed)[/bold red]\n"
             "[red]Please check the errors above and install missing dependencies.[/red]",
             border_style="red"
         ))
