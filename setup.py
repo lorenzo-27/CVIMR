@@ -1,3 +1,4 @@
+import os
 from setuptools import setup, find_packages
 
 def parse_requirements(file_path):
@@ -5,11 +6,20 @@ def parse_requirements(file_path):
     with open(file_path, "r") as file:
         return [line.strip() for line in file if line and not line.startswith("#")]
 
-setup(
-    name="CVIMR",
-    version="1.0.0",
-    author="Lorenzo Benedetti",
-    description="CVIRM XOR repository",
-    packages=find_packages(),
-    install_requires=parse_requirements("requirements.txt")
-)
+if os.path.exists("../../content"): # Colab setup
+  setup(
+      name="CVIMR",
+      version="1.0.0",
+      author="Lorenzo Benedetti",
+      description="CVIRM XOR repository",
+      packages=find_packages()
+  )
+else: # Local setup
+  setup(
+      name="CVIMR",
+      version="1.0.0",
+      author="Lorenzo Benedetti",
+      description="CVIRM XOR repository",
+      packages=find_packages(),
+      install_requires=parse_requirements("requirements.txt")
+  )

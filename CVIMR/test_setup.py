@@ -52,8 +52,8 @@ def test_custom_modules():
     try:
         from CVIMR.model import TwoLayerNet, get_device
         from CVIMR.data import generate_xor, generate_two_moons
-        from training import train_model, TrainingHistory
-        from visualization import plot_decision_boundary
+        from CVIMR.training import train_model, TrainingHistory
+        from CVIMR.visualization import plot_decision_boundary
 
         console.print("[green]✓ All custom modules imported successfully[/green]")
         return True
