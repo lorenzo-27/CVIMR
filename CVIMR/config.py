@@ -4,7 +4,7 @@ Configuration file for experiments.
 
 # Default hyperparameters
 DEFAULT_CONFIG = {
-    'learning_rate': 0.1,
+    'learning_rate': 0.01,
     'max_epochs': 10000,
     'threshold': 1e-5,
     'hidden_dim': 2,

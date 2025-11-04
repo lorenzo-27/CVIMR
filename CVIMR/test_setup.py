@@ -345,7 +345,7 @@ def test_full_experiment():
 
             console.print(pred_table)
 
-        return accuracy >= 0.9  # Consider successful if >90% accuracy
+        return accuracy >= 0.99  # Consider successful if >90% accuracy
 
     except Exception as e:
         console.print(f"[red]✗ Full experiment failed: {e}[/red]")
