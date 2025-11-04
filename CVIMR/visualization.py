@@ -282,8 +282,8 @@ def plot_3d_latent_pca(latent_history, y_data, title="3D Latent Space (PCA)"):
     return fig
 
 
-def create_latent_animation(latent_history, y_data, filename="latent_evolution.gif",
-                            interval=50, title="Latent Space Evolution"):
+def create_latent_animation(latent_history, y_data, filename="latent_evolution.mp4",
+                            interval=500, title="Latent Space Evolution"):
     """
     Create animation of latent space evolution.
 
@@ -332,7 +332,7 @@ def create_latent_animation(latent_history, y_data, filename="latent_evolution.g
     anim = FuncAnimation(fig, animate, frames=n_epochs,
                          interval=interval, blit=True, repeat=True)
 
-    anim.save(filename, writer='pillow', fps=20)
+    anim.save(filename, writer='ffmpeg', fps=20)
     plt.close()
 
     print(f"Animation saved to {filename}")

@@ -171,3 +171,4 @@ cython_debug/
 /CVIMR/checkpoints/
 /CVIMR/plots/
 /CVIMR.egg-info/
+*.mp4
