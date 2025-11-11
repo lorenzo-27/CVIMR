@@ -5,7 +5,7 @@ import torch.nn as nn
 class TwoLayerNet(nn.Module):
     """Two-layer neural network with configurable activation function."""
 
-    def __init__(self, input_dim=2, hidden_dim=2, output_dim=1, activation='relu'):
+    def __init__(self, input_dim=2, hidden_dim=2, output_dim=1, activation='sigmoid'):
         """
         Initialize the network.
 
@@ -30,7 +30,6 @@ class TwoLayerNet(nn.Module):
             raise ValueError(f"Activation must be one of {list(activation_functions.keys())}")
 
         self.activation = activation_functions[activation.lower()]
-        self.activation_name = activation.lower()
 
     def forward(self, x):
         """
@@ -48,7 +47,9 @@ class TwoLayerNet(nn.Module):
         """Initialize hidden layer as identity transform (for 2x2 case)."""
         with torch.no_grad():
             if self.hidden_layer.weight.shape == (2, 2):
+                # Set weights to identity matrix
                 self.hidden_layer.weight.copy_(torch.eye(2))
+                # Zero out biases
                 self.hidden_layer.bias.fill_(0.)
             else:
                 raise ValueError("Identity initialization only supported for 2x2 hidden layer")
