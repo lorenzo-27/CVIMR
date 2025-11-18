@@ -105,7 +105,7 @@ def test_model_creation():
             console.print(f"✓ {activation.upper()}: {n_params} parameters")
 
         # Test identity initialization
-        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='relu')
+        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='sigmoid')
         model.initialize_identity()
         console.print("✓ Identity initialization works")
 
@@ -160,7 +160,7 @@ def test_training():
         device = get_device()
         x_data, y_data = generate_xor()
 
-        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='relu')
+        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='sigmoid')
 
         console.print("Training for 100 epochs (quick test)...")
         history = train_model(
@@ -172,7 +172,7 @@ def test_training():
             threshold=1e-10,  # Won't reach threshold
             device=device,
             record_interval=10,
-            use_bce=True
+            use_bce=False,
         )
 
         table = Table(show_header=False)
@@ -218,7 +218,7 @@ def test_visualization():
         device = get_device()
         x_data, y_data = generate_xor()
 
-        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='relu')
+        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='sigmoid')
         history = train_model(
             model=model,
             x_data=x_data,
@@ -228,7 +228,7 @@ def test_visualization():
             threshold=1e-10,
             device=device,
             record_interval=10,
-            use_bce=True
+            use_bce=False
         )
 
         # Test each visualization
@@ -288,8 +288,8 @@ def test_full_experiment():
         device = get_device()
         x_data, y_data = generate_xor()
 
-        console.print("Training XOR with ReLU activation...")
-        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='relu')
+        console.print("Training XOR with Sigmoid activation...")
+        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='sigmoid')
         model.initialize_identity()
 
         history = train_model(
@@ -301,10 +301,10 @@ def test_full_experiment():
             threshold=1e-5,
             device=device,
             record_interval=50,
-            use_bce=True
+            use_bce=False
         )
 
-        accuracy = compute_accuracy(model, x_data, y_data, device=device)
+        accuracy = compute_accuracy(model, x_data, y_data, device=device, use_sigmoid=False)
 
         table = Table(title="Experiment Results")
         table.add_column("Metric", style="cyan")
@@ -321,7 +321,7 @@ def test_full_experiment():
         model.eval()
         with torch.no_grad():
             outputs, _ = model(x_data.to(device))
-            predictions = (torch.sigmoid(outputs) > 0.5).cpu().float()
+            predictions = outputs.round().cpu().float()
 
             pred_table = Table(title="Predictions")
             pred_table.add_column("Input", style="white")

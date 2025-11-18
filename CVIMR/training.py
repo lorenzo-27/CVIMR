@@ -32,7 +32,7 @@ class TrainingHistory:
 
 def train_model(model, x_data, y_data, lr=0.1, max_epochs=10000,
                 threshold=1e-5, device='cpu', record_interval=1,
-                use_bce=True):
+                use_bce=False):
     """
     Train the neural network.
 
@@ -85,7 +85,7 @@ def train_model(model, x_data, y_data, lr=0.1, max_epochs=10000,
             if use_bce:
                 predictions = torch.sigmoid(output) > 0.5
             else:
-                predictions = output > 0.5
+                predictions = output.round()
             accuracy = (predictions == y_data).float().mean().item()
 
         # Record history
@@ -112,7 +112,7 @@ def train_model(model, x_data, y_data, lr=0.1, max_epochs=10000,
     return history
 
 
-def compute_accuracy(model, x_data, y_data, device='cpu', use_sigmoid=True):
+def compute_accuracy(model, x_data, y_data, device='cpu', use_sigmoid=False):
     """
     Compute model accuracy.
 
@@ -135,8 +135,7 @@ def compute_accuracy(model, x_data, y_data, device='cpu', use_sigmoid=True):
         if use_sigmoid:
             predictions = torch.sigmoid(output) > 0.5
         else:
-            predictions = output > 0.5
-
+            predictions = output.round()
         accuracy = (predictions == y_data).float().mean().item()
 
     return accuracy
