@@ -62,6 +62,9 @@ def train_model(model, x_data, y_data, lr=0.1, max_epochs=10000,
     else:
         criterion = nn.MSELoss()
 
+    # Print loss used
+    console.print(f"[bold blue]Using {'BCEWithLogitsLoss' if use_bce else 'MSELoss'} as loss function.[/bold blue]")
+
     history = TrainingHistory()
     loss_val = float('inf')
     epoch = 0
@@ -71,7 +74,7 @@ def train_model(model, x_data, y_data, lr=0.1, max_epochs=10000,
     # Training loop with progress bar
     for epoch in track(range(max_epochs), description="Training"):
         # Forward pass
-        output, hidden_rep = model(x_data)
+        output, hidden_rep = model(x_data, return_logits=use_bce)
         loss = criterion(output, y_data)
         loss_val = loss.item()
 
@@ -83,7 +86,7 @@ def train_model(model, x_data, y_data, lr=0.1, max_epochs=10000,
         # Calculate accuracy
         with torch.no_grad():
             if use_bce:
-                predictions = torch.sigmoid(output) > 0.5
+                predictions = (torch.sigmoid(output) > 0.5).float()
             else:
                 predictions = output.round()
             accuracy = (predictions == y_data).float().mean().item()
@@ -112,7 +115,7 @@ def train_model(model, x_data, y_data, lr=0.1, max_epochs=10000,
     return history
 
 
-def compute_accuracy(model, x_data, y_data, device='cpu', use_sigmoid=False):
+def compute_accuracy(model, x_data, y_data, device='cpu', use_bce=False):
     """
     Compute model accuracy.
 
@@ -121,7 +124,7 @@ def compute_accuracy(model, x_data, y_data, device='cpu', use_sigmoid=False):
         x_data: Input data
         y_data: Target data
         device: Device to compute on
-        use_sigmoid: Apply sigmoid to output
+        use_bce: Use BCE loss instead of MSE
 
     Returns:
         float: Accuracy value
@@ -130,12 +133,14 @@ def compute_accuracy(model, x_data, y_data, device='cpu', use_sigmoid=False):
     with torch.no_grad():
         x_data = x_data.to(device)
         y_data = y_data.to(device)
-        output, _ = model(x_data)
+        output, _ = model(x_data, return_logits=use_bce)
 
-        if use_sigmoid:
-            predictions = torch.sigmoid(output) > 0.5
+        if use_bce:
+            predictions = (torch.sigmoid(output) > 0.5).float()
+            print("Eval predictions with sigmoid:", predictions)
         else:
             predictions = output.round()
+            print("Eval predictions:", predictions)
         accuracy = (predictions == y_data).float().mean().item()
 
     return accuracy

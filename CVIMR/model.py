@@ -5,7 +5,7 @@ import torch.nn as nn
 class TwoLayerNet(nn.Module):
     """Two-layer neural network with configurable activation function."""
 
-    def __init__(self, input_dim=2, hidden_dim=2, output_dim=1, activation='sigmoid'):
+    def __init__(self, input_dim=2, hidden_dim=2, output_dim=1, activation='relu'):
         """
         Initialize the network.
 
@@ -31,7 +31,7 @@ class TwoLayerNet(nn.Module):
 
         self.activation = activation_functions[activation.lower()]
 
-    def forward(self, x):
+    def forward(self, x, return_logits=False):
         """
         Forward pass.
 
@@ -40,8 +40,14 @@ class TwoLayerNet(nn.Module):
         """
         z_hidden = self.hidden_layer(x)
         a_hidden = self.activation(z_hidden)
-        out = self.output_layer(a_hidden)
-        return out, a_hidden
+
+        logits = self.output_layer(a_hidden)
+
+        if return_logits:
+            return logits, a_hidden
+        else:
+            out = torch.sigmoid(logits)
+            return out, a_hidden
 
     def initialize_identity(self):
         """Initialize hidden layer as identity transform (for 2x2 case)."""

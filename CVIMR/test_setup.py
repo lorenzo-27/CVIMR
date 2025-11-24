@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-"""
-Test setup and verify all components work correctly.
-"""
 import sys
 import torch
 from rich.console import Console
@@ -105,7 +102,7 @@ def test_model_creation():
             console.print(f"✓ {activation.upper()}: {n_params} parameters")
 
         # Test identity initialization
-        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='sigmoid')
+        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='relu')
         model.initialize_identity()
         console.print("✓ Identity initialization works")
 
@@ -160,16 +157,16 @@ def test_training():
         device = get_device()
         x_data, y_data = generate_xor()
 
-        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='sigmoid')
+        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='relu')
 
         console.print("Training for 100 epochs (quick test)...")
         history = train_model(
             model=model,
             x_data=x_data,
             y_data=y_data,
-            lr=0.1,
+            lr=3,
             max_epochs=100,
-            threshold=1e-10,  # Won't reach threshold
+            threshold=1e-10,
             device=device,
             record_interval=10,
             use_bce=False,
@@ -218,12 +215,12 @@ def test_visualization():
         device = get_device()
         x_data, y_data = generate_xor()
 
-        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='sigmoid')
+        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='relu')
         history = train_model(
             model=model,
             x_data=x_data,
             y_data=y_data,
-            lr=0.1,
+            lr=3,
             max_epochs=100,
             threshold=1e-10,
             device=device,
@@ -288,15 +285,15 @@ def test_full_experiment():
         device = get_device()
         x_data, y_data = generate_xor()
 
-        console.print("Training XOR with Sigmoid activation...")
-        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='sigmoid')
+        console.print("Training XOR with ReLU activation...")
+        model = TwoLayerNet(input_dim=2, hidden_dim=2, output_dim=1, activation='relu')
         model.initialize_identity()
 
         history = train_model(
             model=model,
             x_data=x_data,
             y_data=y_data,
-            lr=0.1,
+            lr=3,
             max_epochs=5000,
             threshold=1e-5,
             device=device,
@@ -304,7 +301,7 @@ def test_full_experiment():
             use_bce=False
         )
 
-        accuracy = compute_accuracy(model, x_data, y_data, device=device, use_sigmoid=False)
+        accuracy = compute_accuracy(model, x_data, y_data, device=device, use_bce=False)
 
         table = Table(title="Experiment Results")
         table.add_column("Metric", style="cyan")
