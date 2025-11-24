@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-"""
-Quick experiment runner for testing different configurations.
-"""
 import argparse
 import torch
 from rich.console import Console
@@ -13,6 +10,7 @@ from .data import (generate_xor, generate_3input_xor,
                         generate_two_moons, generate_spiral, generate_circles)
 from .training import train_model, compute_accuracy
 from .visualization import plot_decision_boundary, plot_latent_trajectories
+from .utils import set_seed
 
 console = Console()
 
@@ -35,7 +33,7 @@ def main():
                         help='Activation function')
     parser.add_argument('--hidden', type=int, default=2,
                         help='Hidden layer size')
-    parser.add_argument('--lr', type=float, default=0.1,
+    parser.add_argument('--lr', type=float, default=3,
                         help='Learning rate')
     parser.add_argument('--epochs', type=int, default=10000,
                         help='Maximum epochs')
@@ -57,6 +55,7 @@ def main():
     checkpoints_dir.mkdir(exist_ok=True)
 
     # Set seed
+    set_seed(args.seed)
     torch.manual_seed(args.seed)
 
     # Get device
@@ -126,12 +125,12 @@ def main():
         threshold=args.threshold,
         device=device,
         record_interval=max(1, args.epochs // 100),
-        use_bce=True
+        use_bce=False
     )
 
     # Evaluate
     console.print("\n[bold cyan]═══ Evaluation ═══[/bold cyan]")
-    accuracy = compute_accuracy(model, x_data, y_data, device=device)
+    accuracy = compute_accuracy(model, x_data, y_data, device=device, use_bce=False)
     final_loss = history.losses[-1]
 
     results_table = Table(show_header=False, box=None)
@@ -149,7 +148,7 @@ def main():
     model.eval()
     with torch.no_grad():
         outputs, _ = model(x_data.to(device))
-        predictions = (torch.sigmoid(outputs) > 0.5).cpu().float()
+        predictions = outputs.round().cpu().float()
 
         pred_table = Table()
         pred_table.add_column("Sample", style="cyan")

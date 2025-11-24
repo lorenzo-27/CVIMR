@@ -19,6 +19,12 @@ class TwoLayerNet(nn.Module):
         self.hidden_layer = nn.Linear(input_dim, hidden_dim)
         self.output_layer = nn.Linear(hidden_dim, output_dim)
 
+        # Xavier initialization
+        nn.init.xavier_uniform_(self.hidden_layer.weight)
+        nn.init.zeros_(self.hidden_layer.bias)
+        nn.init.xavier_uniform_(self.output_layer.weight)
+        nn.init.zeros_(self.output_layer.bias)
+
         # Select activation function
         activation_functions = {
             'relu': nn.ReLU(),

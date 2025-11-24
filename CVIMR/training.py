@@ -54,6 +54,9 @@ def train_model(model, x_data, y_data, lr=0.1, max_epochs=10000,
     x_data = x_data.to(device)
     y_data = y_data.to(device)
 
+    torch.use_deterministic_algorithms(True, warn_only=True)
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+
     optimizer = optim.SGD(model.parameters(), lr=lr)
 
     # Use BCE loss for classification
